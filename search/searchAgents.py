@@ -283,13 +283,14 @@ class CornersProblem(search.SearchProblem):
     test with:
     python pacman.py -l tinyCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
     python pacman.py -l mediumCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
+    python pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
     """
     
   def getStartState(self):
     "Returns the start state (in your state space, not the full Pacman state space)"
     "*** YOUR CODE HERE ***"
     position = self.startingPosition
-    visited = ()
+    visited = ()		# must be a hashable type
     if position in self.corners:		# start state is corner
       visited += (position,)
     return (position, visited )		# (positions, tuple of corners found)
@@ -323,8 +324,7 @@ class CornersProblem(search.SearchProblem):
       #   nextx, nexty = int(x + dx), int(y + dy)
       #   hitsWall = self.walls[nextx][nexty]
       "*** YOUR CODE HERE ***"
-      # DEBUG: print 'action: ' + str(action)
-      stepCost = self.getCostOfActions( [action] )
+      #if DEBUG: print 'state[0]: ' + str(state[0])
       x,y = state[0]
       dx, dy = Actions.directionToVector(action)
       position = nextx, nexty = int(x + dx), int(y + dy)
@@ -332,18 +332,20 @@ class CornersProblem(search.SearchProblem):
       hitsWall = self.walls[nextx][nexty]
       if hitsWall:
         continue
+      #self.startingPosition = state[0]
+      #stepCost = self.getCostOfActions( [action] )
+      stepCost = 1
       
       visited = state[1]
       if position in self.corners and position not in visited:
         visited += (position,)		# add to visited tuple
-        if DEBUG: print 'CORNER FOUND: ' + str(visited)
+        #if DEBUG: print 'CORNER FOUND: ' + str(visited)
       
       nextState = (position, visited )
-      #if DEBUG: print 'nextState: ' + str(nextState)
       successors += [ (nextState, action, stepCost) ]
       
     self._expanded += 1
-    if DEBUG and (self._expanded % 500) == 0: print 'nodes expanded: ' + str(self._expanded)
+    if DEBUG and (self._expanded % 1000) == 0: print 'nodes expanded: ' + str(self._expanded)
     #if DEBUG: print 'successors: ' + str(successors)
     return successors
 
@@ -379,6 +381,7 @@ def cornersHeuristic(state, problem):
   walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
   
   "*** YOUR CODE HERE ***"
+  return 0
   top, right = problem.walls.height-2, problem.walls.width-2
   avg = (top+right) / 2
   

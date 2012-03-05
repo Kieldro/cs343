@@ -135,7 +135,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
 def genericSearch(problem, x, heuristic=nullHeuristic):
   # initialize variables
-  frontier = util.PriorityQueue()		# priority queue of (node, depth)
+  frontier = util.PriorityQueue()		# priority queue of (node, depth) (lowest priority first)
   explored = set()		# explored set of states
   if DEBUG: print 'initialized frontier: ' + str(frontier)
   
@@ -146,9 +146,9 @@ def genericSearch(problem, x, heuristic=nullHeuristic):
   #if DEBUG: print dir(list)
   
   while not frontier.isEmpty():
-   # if DEBUG: raw_input('waiting for input...')
+    #if DEBUG: raw_input('waiting for input...')
     node = state, actions, depth = frontier.pop()
-    #if DEBUG: print 'popped node: ' + str(node)
+    #if DEBUG: print 'popped node depth: ' + str(depth)
     #if DEBUG: print 'actions: ' + str(actions)
     
     # add state to explored set
@@ -156,16 +156,19 @@ def genericSearch(problem, x, heuristic=nullHeuristic):
     
     # test for goal state
     if problem.isGoalState(state):
-      if DEBUG: print 'returning actions: ' + str(actions)
+      #if DEBUG: print 'returning actions: ' + str(actions)
       return actions
     
     # add successors to frontier
     successors = problem.getSuccessors(state)
-    #if DEBUG: print 'successors: ' + str(successors)
+    #if DEBUG: print 'successors len: ' + str(len(successors))
     for state, action, stepCost in successors:
         if state not in explored:
+          #if DEBUG: print 'len of explored: ' + str(len(explored))
+          #if DEBUG: print 'state: ' + str(state)
           succActions = actions + [action]
           cost = depth + stepCost
+          #if DEBUG: print 'cost: ' + str(cost)
           frontier.push( (state, succActions, cost), x*(cost + heuristic(state,problem)) )
           #if DEBUG: print 'actions pushed: ' + str(actions[-3:])
     #if DEBUG: print "\n"
